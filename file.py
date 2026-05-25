@@ -113,102 +113,125 @@ MESSAGES = [
     "I bless you. Go forward with a brave and happy heart."
 ]
 
-st.set_page_config(page_title="Divine Messages", page_icon="✨", layout="centered")
+st.set_page_config(page_title="Glassmorphism Sanctuary", page_icon="🔮", layout="centered")
 
-# Custom Sleek Glassmorphism CSS
-st.markdown("""
-<style>
-.stApp {
-    background: linear-gradient(135deg, #0f172a, #1e1b4b, #311042);
-    color: #f8fafc;
+# Theme selection interaction
+bg_theme = st.sidebar.selectbox(
+    "Choose Aesthetic",
+    ["Midnight Nebula", "Cyber Sunset", "Emerald Aurora"]
+)
+
+# Interactive custom countdown duration adjustment
+countdown_duration = st.sidebar.slider("Countdown Duration (Seconds)", 3, 10, 5)
+
+# Interactive category filters
+category_filter = st.sidebar.radio(
+    "Filter Guidance Category",
+    ["All Messages", "Inner Peace & Mind", "Health & Healing", "Future & Blessings"]
+)
+
+# Apply dynamic background styles based on interaction
+bg_gradients = {
+    "Midnight Nebula": "linear-gradient(135deg, #0f2027, #203a43, #2c5364)",
+    "Cyber Sunset": "linear-gradient(135deg, #111111, #190a1e, #3a1c3b)",
+    "Emerald Aurora": "linear-gradient(135deg, #051911, #0d3421, #162529)"
 }
-.glass-card {
-    background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 16px;
-    padding: 24px;
-    margin: 18px 0;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
-    transition: transform 0.3s ease;
-}
-.glass-card:hover {
-    transform: translateY(-2px);
-    background: rgba(255, 255, 255, 0.09);
-}
-div.stButton > button {
-    background: rgba(255, 255, 255, 0.08) !important;
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    color: #fff !important;
-    border-radius: 12px;
-    padding: 12px 28px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    width: 100%;
-}
-div.stButton > button:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.18) !important;
-    border-color: rgba(255, 255, 255, 0.4) !important;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-}
-div.stButton > button:disabled {
-    background: rgba(255, 255, 255, 0.02) !important;
-    color: rgba(255, 255, 255, 0.3) !important;
-    border-color: rgba(255, 255, 255, 0.05) !important;
-}
-h1 {
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    background: linear-gradient(90deg, #fff, #c7d2fe);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-</style>
+
+selected_bg = bg_gradients[bg_theme]
+
+# Glassmorphism Global Injector
+st.markdown(f"""
+    <style>
+    .stApp {{
+        background: {selected_bg} !important;
+        color: #ffffff !important;
+    }}
+    .glass-box {{
+        background: rgba(255, 255, 255, 0.04) !important;
+        backdrop-filter: blur(12px) saturate(180%) !important;
+        -webkit-backdrop-filter: blur(12px) saturate(180%) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        border-radius: 20px !important;
+        padding: 25px !important;
+        margin-top: 15px !important;
+        margin-bottom: 25px !important;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3) !important;
+    }}
+    h1, h2, h3, p, label, .stWidgetLabel {{
+        color: #ffffff !important;
+        font-family: 'Inter', sans-serif;
+    }}
+    div.stButton > button {{
+        background: rgba(255, 255, 255, 0.1) !important;
+        color: white !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        backdrop-filter: blur(5px) !important;
+        border-radius: 12px !important;
+        padding: 10px 24px !important;
+        transition: all 0.3s ease !important;
+        width: 100%;
+    }}
+    div.stButton > button:hover {{
+        background: rgba(255, 255, 255, 0.2) !important;
+        border-solid: 1px solid rgba(255, 255, 255, 0.4) !important;
+        transform: scale(1.02);
+    }}
+    </style>
 """, unsafe_allow_html=True)
 
-st.title("✨ Divine Message Generator")
-st.write("Click below to receive your three unique messages of guidance.")
-st.write("")
+# Main glass container setup
+st.markdown("<div class='glass-box'><h1>🔮 Glassmorphism Divine Portal</h1><p>Set configurations in the sidebar menu and pull deep cosmic insights.</p></div>", unsafe_allow_html=True)
+
+# Filter implementation based on interaction selection
+if category_filter == "Inner Peace & Mind":
+    pool = MESSAGES[24:60]
+elif category_filter == "Health & Healing":
+    pool = MESSAGES[60:80]
+elif category_filter == "Future & Blessings":
+    pool = MESSAGES[80:108]
+else:
+    pool = MESSAGES
 
 if "running" not in st.session_state:
     st.session_state.running = False
-if "chosen_messages" not in st.session_state:
-    st.session_state.chosen_messages = []
+if "chosen" not in st.session_state:
+    st.session_state.chosen = []
 
-def trigger_countdown():
+def start_cycle():
     st.session_state.running = True
 
-st.button(
-    "Generate Messages", 
-    on_click=trigger_countdown, 
-    disabled=st.session_state.running
-)
+# Main call to action trigger
+st.button("Manifest Selected Array", on_click=start_cycle, disabled=st.session_state.running)
 
 if st.session_state.running:
-    countdown_text = st.empty()
-    progress_bar = st.progress(0)
+    status_holder = st.empty()
+    bar_holder = st.progress(0)
     
-    for remaining in range(5, 0, -1):
-        countdown_text.markdown(f"<h3 style='text-align: center; color: #e2e8f0;'>⏳ Revealing guidance in {remaining}s...</h3>", unsafe_allow_html=True)
-        progress_bar.progress((6 - remaining) * 20)
+    for passed in range(countdown_duration, 0, -1):
+        status_holder.markdown(f"<div style='text-align: center; font-size: 1.2rem; margin: 10px;'>⚡ Aligning timelines... ({passed}s remaining)</div>", unsafe_allow_html=True)
+        percent = int(((countdown_duration - passed + 1) / countdown_duration) * 100)
+        bar_holder.progress(percent)
         time.sleep(1)
         
-    countdown_text.empty()
-    progress_bar.empty()
+    status_holder.empty()
+    bar_holder.empty()
     
-    st.session_state.chosen_messages = random.sample(MESSAGES, 3)
+    st.session_state.chosen = random.sample(pool, min(3, len(pool)))
     st.session_state.running = False
     st.rerun()
 
-if st.session_state.chosen_messages and not st.session_state.running:
-    st.write("")
-    for i, msg in enumerate(st.session_state.chosen_messages, 1):
+# Output styling wrapped inside sleek transparent container objects
+if st.session_state.chosen and not st.session_state.running:
+    st.markdown("### 🌌 Received Manifestations")
+    for rank, insight in enumerate(st.session_state.chosen, 1):
         st.markdown(f"""
-        <div class="glass-card">
-            <div style="color: #818cf8; font-size: 0.85em; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">Message {i}</div>
-            <div style="font-size: 1.15em; line-height: 1.6; color: #f1f5f9;">{msg}</div>
-        </div>
+            <div class='glass-box' style='margin-bottom:15px;'>
+                <span style='color: #a3e635; font-weight: bold; font-size:0.9rem;'>INSIGHT 0{rank}</span>
+                <p style='font-size: 1.15rem; margin-top: 5px; line-height:1.5;'>"{insight}"</p>
+            </div>
         """, unsafe_allow_html=True)
+
+    # Interactive reset state feature
+    if st.button("Clear Dynamic Cache"):
+        st.session_state.chosen = []
+        st.rerun()
