@@ -115,105 +115,112 @@ MESSAGES = [
 
 st.set_page_config(page_title="Divine Messages", page_icon="✨", layout="centered")
 
-# Custom Glassmorphism CSS styling layout
+# Inject Glassmorphism CSS with Montserrat font
 st.markdown("""
-<style>
-    .stApp {
-        background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%) !important;
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap');
+    
+    html, body, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
+        font-family: 'Montserrat', sans-serif !important;
+        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364) !important;
         color: #ffffff !important;
     }
-    h1, h2, h3, p, span, label {
-        color: #ffffff !important;
-        font-family: 'Inter', sans-serif;
-    }
-    .glass-container {
-        background: rgba(255, 255, 255, 0.03);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border-radius: 24px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        padding: 35px;
-        margin-top: 20px;
-        margin-bottom: 25px;
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    
+    .main .block-container {
+        max-width: 650px;
         text-align: center;
+        padding-top: 3rem;
     }
+    
+    h1 {
+        font-weight: 700 !important;
+        letter-spacing: 2px;
+        text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    
     .glass-card {
-        background: rgba(255, 255, 255, 0.05);
+        background: rgba(255, 255, 255, 0.06);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         border-radius: 16px;
         border: 1px solid rgba(255, 255, 255, 0.12);
-        padding: 20px;
-        margin-top: 15px;
-        box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.2);
-        transition: transform 0.3s ease, border 0.3s ease, box-shadow 0.3s ease;
-        text-align: left;
+        padding: 25px;
+        margin: 20px auto;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s ease, background 0.3s ease;
     }
+    
     .glass-card:hover {
-        transform: translateY(-4px);
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        box-shadow: 0 8px 32px 0 rgba(255, 255, 255, 0.08);
+        transform: translateY(-3px);
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
     }
-    div.stButton > button {
+    
+    .stButton {
+        display: flex;
+        justify-content: center;
+        margin: 30px 0;
+    }
+    
+    .stButton > button {
         background: rgba(255, 255, 255, 0.08) !important;
-        backdrop-filter: blur(10px) !important;
-        -webkit-backdrop-filter: blur(10px) !important;
+        backdrop-filter: blur(8px);
         border: 1px solid rgba(255, 255, 255, 0.2) !important;
         color: #ffffff !important;
         border-radius: 50px !important;
         padding: 14px 40px !important;
         font-weight: 600 !important;
         font-size: 16px !important;
-        letter-spacing: 1.5px !important;
-        text-transform: uppercase !important;
-        transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
-        width: 100% !important;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3) !important;
-        margin-top: 10px;
+        letter-spacing: 1px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
     }
-    div.stButton > button:hover {
+    
+    .stButton > button:hover {
         background: rgba(255, 255, 255, 0.2) !important;
-        border: 1px solid rgba(255, 255, 255, 0.5) !important;
-        box-shadow: 0 8px 25px rgba(255,255,255,0.15) !important;
-        transform: scale(1.02);
+        border: 1px solid rgba(255, 255, 255, 0.4) !important;
+        box-shadow: 0 6px 20px rgba(255,255,255,0.15);
+        transform: scale(1.04);
     }
-    div.stButton > button:active {
+    
+    .stButton > button:active {
         transform: scale(0.98);
     }
-    .stProgress > div > div > div > div {
+    
+    div[data-testid="stProgress"] > div > div > div {
         background-color: rgba(255, 255, 255, 0.4) !important;
     }
-</style>
+    </style>
 """, unsafe_allow_html=True)
+
+st.write("# ✨ DIVINE MESSAGES")
+st.write("Experience higher guidance through reflection.")
 
 if "running" not in st.session_state:
     st.session_state.running = False
 if "chosen_messages" not in st.session_state:
     st.session_state.chosen_messages = []
 
-st.markdown('<div class="glass-container"><h1>✨ Divine Revelations</h1><p>Experience personalized interactive spiritual insights</p></div>', unsafe_allow_html=True)
-
-def trigger_countdown():
+def start_timer():
     st.session_state.running = True
 
 st.button(
-    "Generate", 
-    on_click=trigger_countdown, 
+    "GENERATE", 
+    on_click=start_timer, 
     disabled=st.session_state.running
 )
 
 if st.session_state.running:
-    countdown_text = st.empty()
-    progress_bar = st.progress(0)
+    status_box = st.empty()
+    progress_box = st.empty()
     
     for remaining in range(5, 0, -1):
-        countdown_text.markdown(f'<div style="text-align:center; margin:15px 0; font-size:1.2rem; font-weight:500;">⏳ Aligning energy... {remaining}s</div>', unsafe_allow_html=True)
-        progress_bar.progress((6 - remaining) * 20)
+        status_box.markdown(f"### ⏳ Channeling answers in {remaining}s...")
+        progress_box.progress((6 - remaining) * 20)
         time.sleep(1)
         
-    countdown_text.empty()
-    progress_bar.empty()
+    status_box.empty()
+    progress_box.empty()
     
     st.session_state.chosen_messages = random.sample(MESSAGES, 3)
     st.session_state.running = False
@@ -221,10 +228,7 @@ if st.session_state.running:
 
 if st.session_state.chosen_messages and not st.session_state.running:
     for i, msg in enumerate(st.session_state.chosen_messages, 1):
-        card_html = f"""
-        <div class="glass-card">
-            <span style="font-size:0.85rem; text-transform:uppercase; letter-spacing:2px; opacity:0.6; display:block; margin-bottom:5px;">Insight {i}</span>
-            <span style="font-size:1.15rem; line-height:1.5; font-weight:400; display:block;">{msg}</span>
-        </div>
-        """
-        st.markdown(card_html, unsafe_allow_html=True)
+        st.markdown(
+            f'<div class="glass-card"><h4>Message {i}</h4><p>{msg}</p></div>', 
+            unsafe_allow_html=True
+        )
