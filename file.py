@@ -115,7 +115,7 @@ MESSAGES = [
 
 st.set_page_config(page_title="Divine Messages", page_icon="✨", layout="centered")
 
-st.title("✨ Divine Message Generator")
+st.title("✨ Divine Messages")
 st.write("Receive three unique messages of guidance.")
 
 if "running" not in st.session_state:
